@@ -8,6 +8,7 @@ namespace T3\Dce\Components\ContentElementGenerator;
  *  | (c) 2012-2026 Armin Vieweg <armin@v.ieweg.de>
  */
 use T3\Dce\Components\FlexformToTcaMapper\Mapper;
+use T3\Dce\Utility\TcaConfigurationNormalizer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
@@ -266,6 +267,9 @@ class OutputTcaAndFlexForm
 
                         $conf = new \DOMDocument();
                         $conf->loadXML('<root>' . $dceSectionField['configuration'] . '</root>');
+                        if ($conf->childNodes[0] instanceof \DOMElement) {
+                            TcaConfigurationNormalizer::normalizeConfigElement($conf->childNodes[0]);
+                        }
 
                         /** @var \DOMElement $childNode */
                         foreach ($conf->childNodes[0]->childNodes as $childNode) {
@@ -283,6 +287,7 @@ class OutputTcaAndFlexForm
                     $conf->loadXML('<root>' . $dceField['configuration'] . '</root>');
                     /** @var \DOMElement $firstChildNode */
                     $firstChildNode = $conf->childNodes[0];
+                    TcaConfigurationNormalizer::normalizeConfigElement($firstChildNode);
                     foreach ($firstChildNode->childNodes as $childNode) {
                         if ($childNode instanceof \DOMElement && 'config' === $childNode->tagName) {
                             foreach ($childNode->childNodes as $childConfigNode) {

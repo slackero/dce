@@ -18,6 +18,7 @@ namespace T3\Dce\Utility;
  *
  * - "required" inside the eval list instead of required = 1
  * - renderType="inputDateTime" instead of type="datetime"
+ * - renderType="inputLink" instead of type="link"
  * - items defined as numeric numIndex arrays instead of named keys
  */
 final class TcaConfigurationNormalizer
@@ -47,6 +48,7 @@ final class TcaConfigurationNormalizer
     {
         self::migrateEval($config);
         self::migrateDateTimeType($config);
+        self::migrateLinkType($config);
         self::migrateItems($config);
     }
 
@@ -85,6 +87,26 @@ final class TcaConfigurationNormalizer
             return;
         }
         $type->nodeValue = 'datetime';
+        $config->removeChild($renderType);
+
+        $eval = self::firstChild($config, 'eval');
+        if ($eval instanceof \DOMElement) {
+            $config->removeChild($eval);
+        }
+    }
+
+    private static function migrateLinkType(\DOMElement $config): void
+    {
+        $type = self::firstChild($config, 'type');
+        $renderType = self::firstChild($config, 'renderType');
+        if (!$type instanceof \DOMElement
+            || (string)$type->textContent !== 'input'
+            || !$renderType instanceof \DOMElement
+            || (string)$renderType->textContent !== 'inputLink'
+        ) {
+            return;
+        }
+        $type->nodeValue = 'link';
         $config->removeChild($renderType);
 
         $eval = self::firstChild($config, 'eval');

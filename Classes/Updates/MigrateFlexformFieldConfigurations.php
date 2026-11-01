@@ -55,6 +55,7 @@ final class MigrateFlexformFieldConfigurations implements UpgradeWizardInterface
                 $queryBuilder->expr()->or(
                     $queryBuilder->expr()->like('configuration', $queryBuilder->createNamedParameter('%<eval>%required%')),
                     $queryBuilder->expr()->like('configuration', $queryBuilder->createNamedParameter('%inputDateTime%')),
+                    $queryBuilder->expr()->like('configuration', $queryBuilder->createNamedParameter('%inputLink%')),
                     $queryBuilder->expr()->like('configuration', $queryBuilder->createNamedParameter('%<items type="array">%')),
                 ),
             )

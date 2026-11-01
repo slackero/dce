@@ -303,7 +303,7 @@ class AfterSaveHook
         }
 
         if ('tx_dce_domain_model_dce' === $table && 'new' === $status && isset($fieldArray['t3_origuid']) && !empty($fieldArray['t3_origuid'])) {
-            $this->updateDB('tx_dce_domain_model_dce', $this->uid, ['title' => $fieldArray['title'] . ' copy']);
+            $this->updateDB('tx_dce_domain_model_dce', $this->uid, ['title' => ($fieldArray['title'] ?? '') . ' copy']);
         }
     }
 
@@ -358,6 +358,10 @@ class AfterSaveHook
         $datamap = $pObj->datamap;
         $datamap = reset($datamap);
         $datamap = reset($datamap);
+        if (!is_array($datamap)) {
+            // reset() returns false on an empty datamap
+            return 0;
+        }
 
         return DceRepository::extractUidFromCTypeOrIdentifier($datamap['CType']);
     }
